@@ -4,12 +4,12 @@ import javafx.scene.Node;
 
 
 
-public class Group extends javafx.scene.Group implements Shape {
+public class Group extends javafx.scene.Group  implements de.hska.iwii.gui.drawing.Shape  {
 
 	private boolean selected;
 	
 	//unnötig
-	public Group(Node... children){
+	public Group(){
 		
 	}
 
@@ -17,12 +17,11 @@ public class Group extends javafx.scene.Group implements Shape {
 	public void setSelected(boolean selected) {
 		
 		// Gehe alle Kinder durch und selektiere sie
-       for (Node node: getChildren()) {
+       for (Node node : getChildren()) {
            ((Shape) node).setSelected(selected);
        }
 	   
-	   selected = true;
-		
+       this.selected = selected;
 	}
 
 	@Override
@@ -34,23 +33,23 @@ public class Group extends javafx.scene.Group implements Shape {
 	public void resizeInteractive(double xFirst, double yFirst, double xNew,
 			double yNew) {
 		
-		
+		//TODO? offset(xNew - xFirst, yNew - yFirst)
+	
 	}
 
 	@Override
 	public void offset(double xFirst, double yFirst) {
 		 for (Node node: getChildren()) {
 	           ((Shape) node).offset(xFirst, yFirst);
-	       }
-	
+		 }
+		 
 	}
 
 	@Override
 	public void move(double xFirst, double yFirst) {
 		for (Node node: getChildren()) {
 	           ((Shape) node).move(xFirst, yFirst);
+	           System.out.println("dfd");
 	       }
 	}
-	
-	
 }
