@@ -10,7 +10,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String args[]) {
-		// Kommentar
+		
 		//lege die javaFx Applikation an 
 		//MainWindow myMainWindow = new MainWindow();
 		
