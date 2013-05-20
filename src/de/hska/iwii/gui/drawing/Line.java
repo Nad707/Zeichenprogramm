@@ -53,7 +53,6 @@ public class Line extends javafx.scene.shape.Line implements
 
 	@Override
 	public boolean isSelected() {
-		// rueckgabe
 		return this.selected;
 	}
 

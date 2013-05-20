@@ -2,8 +2,10 @@ package de.hska.iwii.gui.drawing;
 
 import java.util.ArrayList;
 
+
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import de.hska.iwii.gui.drawing.Shape;
@@ -12,19 +14,19 @@ import de.hska.iwii.gui.drawing.Shape;
  * Implementiert die Schnittstelle DrawingListener
  * 
  * @author Nadja
- * 
  */
+ 
 public class MyDrawingListener implements DrawingListener {
 
 	private Shape myShape;
 	private double oldXPos, oldYPos;
 	private Pane myPanel;
-	private Shape actualFigure;
-	private double FirstFigurePosX = 0;
 
-	private double FirstFigurePosY = 0;
+	
 	double firstPosX;
 	double firstPosY;
+	
+	//Group myGroup = new Group();
 
 	private ArrayList<Node> selectedFigures;
 
@@ -98,9 +100,9 @@ public class MyDrawingListener implements DrawingListener {
 	 */
 	@Override
 	public void startMoveFigure(Node node, double xPos, double yPos) {
-
-		if (!(node instanceof MyPane)) {
-			((Shape) node).offset(xPos, yPos);
+		Node parentNode = highestInstance(node);
+		if (!(parentNode instanceof MyPane)) {
+			((Shape) parentNode).offset(xPos, yPos);
 		}
 	}
 
@@ -109,9 +111,9 @@ public class MyDrawingListener implements DrawingListener {
 	 */
 	@Override
 	public void workMoveFigure(Node node, double xPos, double yPos) {
-
-		if (!(node instanceof MyPane)) {
-			((Shape) node).move(xPos, yPos);
+		Node parentNode = highestInstance(node);
+		if (!(parentNode instanceof MyPane)) {
+			((Shape) parentNode).move(xPos, yPos);
 		}
 	}
 
@@ -127,9 +129,11 @@ public class MyDrawingListener implements DrawingListener {
 	public void selectFigure(Node node, double xPos, double yPos,
 			boolean shiftPressed) {
 		Node parentNode = highestInstance(node);
-
+		//m Group -- dann alle selektiert fehlt noch 
+		
+		
 		// wenn nicht Pane
-		if (!(node instanceof MyPane)) {
+		if (!(parentNode instanceof MyPane)) {//drücken auf Figur
 
 			// wenn nicht gedrückt, dann werden alle deselektiert
 			if (!shiftPressed) {
@@ -137,10 +141,10 @@ public class MyDrawingListener implements DrawingListener {
 				for (Node shape : myPanel.getChildren()) {
 					((Shape) shape).setSelected(false);
 				}
-
 			}
 			// angeklicktes immer selektiert
-			((Shape) node).setSelected(true);
+			((Shape) parentNode).setSelected(true);
+			System.out.println("Geht noch");
 
 		} else { // Pane angedrückt, alles soll deselektieret werden
 			for (Node shape : myPanel.getChildren()) {
@@ -148,32 +152,6 @@ public class MyDrawingListener implements DrawingListener {
 			}
 		}
 
-		//
-		//
-		// // Shift wurde gedrückt, wir selektieren munter drauf los
-		// if (shiftPressed) {
-		// // Falls wir eine Gruppe angewählt haben, wähle diese aus und füge
-		// sie der selektierten Figuren hinzu
-		// if (parentNode != null && parentNode instanceof Group) {
-		// ((Shape) parentNode).setSelected(true);
-		// this.selectedFigures.add(parentNode);
-		// } else {
-		// // Wir haben nur eine einzelne Figur angeklickt.
-		// if (node instanceof Shape) {
-		// ((Shape) node).setSelected(true);
-		// this.selectedFigures.add(node);
-		// }
-		// }
-		// }
-		// // Egal was wir angeklickt haben, es wird deselektiert
-		// else {
-		// for (Node shape : selectedFigures) {
-		// ((Shape) shape).setSelected(false);
-		// }
-		//
-		// selectedFigures = new ArrayList<Node>();
-		//
-		// }
 	}
 
 	public Node highestInstance(Node node) {
@@ -221,7 +199,6 @@ public class MyDrawingListener implements DrawingListener {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void moveSelectedFiguresUp() {
 		// TODO Auto-generated method stub
@@ -229,30 +206,45 @@ public class MyDrawingListener implements DrawingListener {
 	}
 
 	@Override
+	//geht auch 
 	public void groupFigures() {
-		Group myGroup = new Group();
-		// geht alle Kinder von Panel durch von hinten
-		for (int i = myPanel.getChildren().size() - 1; i >= 0; i--) {
-
-			// Node ( bis get(i)) soll zu Shape werden, isSelected ist schon
-			// Methode von Shape
-			if (((Shape) myPanel.getChildren().get(i)).isSelected() == true) {
-				myGroup.getChildren().add(myPanel.getChildren().get(i));
-			}
+		de.hska.iwii.gui.drawing.MyGroup myGroup = new de.hska.iwii.gui.drawing.MyGroup();
+		
+		for(int i = myPanel.getChildren().size() - 1; i >= 0; i--)
+		{
+			Shape currentElement = (Shape)myPanel.getChildren().get(i);
+			if (currentElement.isSelected())
+				myGroup.getChildren().add((Node)currentElement);
+		}
+		
+		for(Node node : myGroup.getChildren())
+		{
+			myPanel.getChildren().remove(node);
 		}
 
+		
 		this.myPanel.getChildren().add((Node) myGroup);
-		
-		for (Node node : myPanel.getChildren() ) {
-			
-		}
-		
-		
+				
 	}
 
 	@Override
 	public void ungroupFigures() {
 		
+		for(int i = myPanel.getChildren().size() - 1; i >= 0; i--){
+			Shape currentElement = (Shape)myPanel.getChildren().get(i);
+		
+			
+			if (currentElement instanceof MyGroup && isGroupSelected()){
+		
+				for(int j = ((MyGroup) currentElement).getChildren().size() - 1; j >= 0; j--){
+					Shape currentChild = (Shape) ((MyGroup)currentElement).getChildren().get(j);
+					this.myPanel.getChildren().add((Node)currentChild);
+				}
+				
+				this.myPanel.getChildren().remove((Node)currentElement);
+			}
+			
+		}
 	}
 
 	@Override
@@ -260,11 +252,11 @@ public class MyDrawingListener implements DrawingListener {
 		int count = 0;
 
 		for (Node shape : myPanel.getChildren()) {
-			if (((Shape) shape).isSelected() == true) {
+			if (((Shape) shape).isSelected() == true ) {
 				count++;
 			}
 		}
-
+		System.out.println("count" + count);
 		return count;
 	}
 
@@ -276,8 +268,14 @@ public class MyDrawingListener implements DrawingListener {
 
 	@Override
 	public boolean isGroupSelected() {
-		// TODO Auto-generated method stub
-		return false;
+		for(int i = myPanel.getChildren().size() - 1; i >= 0; i--)
+		{
+			Shape currentElement = (Shape)myPanel.getChildren().get(i);
+			if (currentElement instanceof de.hska.iwii.gui.drawing.MyGroup)
+				return true;
+		}
+		return false ;
+		
 	}
 
 	@Override
