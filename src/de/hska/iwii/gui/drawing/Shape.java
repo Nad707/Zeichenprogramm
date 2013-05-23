@@ -12,4 +12,6 @@ public interface Shape {
 		
 		public void move(double xFirst, double yFirst);
 		
+		public Shape copy();
+		
 }

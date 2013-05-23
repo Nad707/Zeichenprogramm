@@ -144,8 +144,7 @@ public class MyDrawingListener implements DrawingListener {
 			}
 			// angeklicktes immer selektiert
 			((Shape) parentNode).setSelected(true);
-			System.out.println("Geht noch");
-
+			
 		} else { // Pane angedrückt, alles soll deselektieret werden
 			for (Node shape : myPanel.getChildren()) {
 				((Shape) shape).setSelected(false);
@@ -172,7 +171,25 @@ public class MyDrawingListener implements DrawingListener {
 
 	@Override
 	public void copyFigures() {
-		// TODO Auto-generated method stub
+		 ArrayList<Node> speicher = new ArrayList<Node>();
+		 int i = 0;
+		
+		 //geht alle Kinder des Panel durch
+		 for (Node shape : myPanel.getChildren()) {
+		
+			 //Shape kopieren und zu Speicher hinzufügen
+				if( ((Shape)shape).isSelected()){
+					
+					Shape current = ((Shape) shape).copy();
+					speicher.add( i,(Node) current );
+					i++;
+				}
+			}
+
+		 //Speicher mit kopierten Elemente zu Panel hinzufügen
+		 for (int j = 0; j < speicher.size(); j++) {
+			this.myPanel.getChildren().add((Node) speicher.get(j));
+		}
 
 	}
 
@@ -210,13 +227,17 @@ public class MyDrawingListener implements DrawingListener {
 	public void groupFigures() {
 		de.hska.iwii.gui.drawing.MyGroup myGroup = new de.hska.iwii.gui.drawing.MyGroup();
 		
+		//durchläuft Panel
 		for(int i = myPanel.getChildren().size() - 1; i >= 0; i--)
 		{
 			Shape currentElement = (Shape)myPanel.getChildren().get(i);
+			
+			//wenn Element selektiert ist, füge es zur Gruppe hinzu
 			if (currentElement.isSelected())
 				myGroup.getChildren().add((Node)currentElement);
 		}
 		
+		//entferne Bindung von shape zu Panel(da diese über Group verbunden sind
 		for(Node node : myGroup.getChildren())
 		{
 			myPanel.getChildren().remove(node);
@@ -230,17 +251,20 @@ public class MyDrawingListener implements DrawingListener {
 	@Override
 	public void ungroupFigures() {
 		
+		//Alle Shapes durchlaufen 
 		for(int i = myPanel.getChildren().size() - 1; i >= 0; i--){
 			Shape currentElement = (Shape)myPanel.getChildren().get(i);
 		
-			
+			//überprüfen ob Shape eine Gruppe ist & selektiert ist 
 			if (currentElement instanceof MyGroup && isGroupSelected()){
-		
+				
+				//Kinder der Gruppe wieder direkt zu Pane hinzufügen
 				for(int j = ((MyGroup) currentElement).getChildren().size() - 1; j >= 0; j--){
+					
 					Shape currentChild = (Shape) ((MyGroup)currentElement).getChildren().get(j);
 					this.myPanel.getChildren().add((Node)currentChild);
 				}
-				
+				//Gruppe entfernen 
 				this.myPanel.getChildren().remove((Node)currentElement);
 			}
 			
@@ -250,13 +274,13 @@ public class MyDrawingListener implements DrawingListener {
 	@Override
 	public int getSelectedFiguresCount() {
 		int count = 0;
-
+		
+		//läuft alle kinder der Panel durch und zählt die selektierten 
 		for (Node shape : myPanel.getChildren()) {
 			if (((Shape) shape).isSelected() == true ) {
 				count++;
 			}
 		}
-		System.out.println("count" + count);
 		return count;
 	}
 

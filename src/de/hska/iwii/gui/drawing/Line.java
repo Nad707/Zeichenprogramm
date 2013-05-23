@@ -77,4 +77,12 @@ public class Line extends javafx.scene.shape.Line implements
 		setEndY(getStartY() + offYEnd);
 	}
 
+	@Override
+	public Shape copy() {
+		Line copyLine = new Line(this.getStartX(), this.getStartY(),
+				this.getEndX(), this.getEndY(), this.getFill());
+
+		return copyLine;
+	}
+
 }

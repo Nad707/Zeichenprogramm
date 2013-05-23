@@ -1,5 +1,7 @@
 package de.hska.iwii.gui.drawing;
 
+import java.util.List;
+
 import javafx.scene.Node;
 
 
@@ -51,5 +53,17 @@ public class MyGroup extends javafx.scene.Group  implements de.hska.iwii.gui.dra
 	           ((Shape) node).move(xFirst, yFirst);
 	           System.out.println("dfd");
 	       }
+	}
+
+	@Override
+	public Shape copy() {
+		MyGroup copyGroup = new MyGroup();
+		for (Node node: getChildren()) {
+			Shape currentcopy = ((Shape)node).copy();
+			copyGroup.getChildren().add((Node)currentcopy);
+		
+		 }
+		
+		return copyGroup;
 	}
 }
