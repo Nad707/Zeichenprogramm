@@ -76,7 +76,7 @@ public class Ellipse  extends javafx.scene.shape.Ellipse implements  de.hska.iwi
 
 	@Override
 	public Shape copy() {
-		Ellipse copyEllipse = new Ellipse(this.getCenterX() , this.getCenterY(), this.getRadiusX(), this.getRadiusY(), this.getFill());
+		Ellipse copyEllipse = new Ellipse(this.getCenterX()+15 , this.getCenterY()+15, this.getRadiusX(), this.getRadiusY(), this.getFill());
 		
 		return copyEllipse;
 	}

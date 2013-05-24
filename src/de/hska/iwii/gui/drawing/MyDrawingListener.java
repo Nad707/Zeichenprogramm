@@ -3,9 +3,8 @@ package de.hska.iwii.gui.drawing;
 import java.util.ArrayList;
 
 
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Parent;
+//import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import de.hska.iwii.gui.drawing.Shape;
@@ -29,6 +28,7 @@ public class MyDrawingListener implements DrawingListener {
 	//Group myGroup = new Group();
 
 	private ArrayList<Node> selectedFigures;
+	ArrayList<Node> speicher = new ArrayList<Node>();
 
 	public void setPanel(Pane myPane) {
 		this.myPanel = myPane;
@@ -100,7 +100,9 @@ public class MyDrawingListener implements DrawingListener {
 	 */
 	@Override
 	public void startMoveFigure(Node node, double xPos, double yPos) {
+		
 		Node parentNode = highestInstance(node);
+		
 		if (!(parentNode instanceof MyPane)) {
 			((Shape) parentNode).offset(xPos, yPos);
 		}
@@ -154,24 +156,30 @@ public class MyDrawingListener implements DrawingListener {
 	}
 
 	public Node highestInstance(Node node) {
+		//Vater finden
 		if (!(node instanceof MyPane)) {
 			while (!(node.getParent() instanceof MyPane)) {
 				node = node.getParent();
 			}
 		}
-
 		return node;
 	}
 
 	@Override
 	public void deleteFigures() {
-		// TODO Auto-generated method stub
-		// remove chi
+		//läuft ganzes Panel durch
+		for (Node shape : myPanel.getChildren()) {
+			//wenn shape selektiert ist, entferne es
+			if(((Shape) shape).isSelected()){
+				this.myPanel.getChildren().remove((Node)shape);
+			}
+		}
+		
 	}
 
 	@Override
 	public void copyFigures() {
-		 ArrayList<Node> speicher = new ArrayList<Node>();
+		//ArrayList<Node> speicher = new ArrayList<Node>();
 		 int i = 0;
 		
 		 //geht alle Kinder des Panel durch
@@ -183,19 +191,20 @@ public class MyDrawingListener implements DrawingListener {
 					Shape current = ((Shape) shape).copy();
 					speicher.add( i,(Node) current );
 					i++;
+					System.out.println("Reinkopieren in Speicher");
 				}
 			}
-
-		 //Speicher mit kopierten Elemente zu Panel hinzufügen
-		 for (int j = 0; j < speicher.size(); j++) {
-			this.myPanel.getChildren().add((Node) speicher.get(j));
-		}
-
 	}
+	
+
 
 	@Override
 	public void pasteFigures() {
-		// TODO Auto-generated method stub
+		
+		//Speicher mit kopierten Elemente zu Panel hinzufügen
+		 for (int j = 0; j < speicher.size(); j++) {
+			this.myPanel.getChildren().add((Node) speicher.get(j));
+		}
 
 	}
 
@@ -286,8 +295,8 @@ public class MyDrawingListener implements DrawingListener {
 
 	@Override
 	public int getFiguresInClipboardCount() {
-		// TODO Auto-generated method stub
-		return 0;
+	
+		return speicher.size();
 	}
 
 	@Override

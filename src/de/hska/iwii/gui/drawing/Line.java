@@ -79,8 +79,8 @@ public class Line extends javafx.scene.shape.Line implements
 
 	@Override
 	public Shape copy() {
-		Line copyLine = new Line(this.getStartX(), this.getStartY(),
-				this.getEndX(), this.getEndY(), this.getFill());
+		Line copyLine = new Line(this.getStartX()+10, this.getStartY()+10,
+				this.getEndX()+10, this.getEndY()+10, this.getFill());
 
 		return copyLine;
 	}

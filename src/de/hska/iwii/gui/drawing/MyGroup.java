@@ -51,7 +51,6 @@ public class MyGroup extends javafx.scene.Group  implements de.hska.iwii.gui.dra
 	public void move(double xFirst, double yFirst) {
 		for (Node node: getChildren()) {
 	           ((Shape) node).move(xFirst, yFirst);
-	           System.out.println("dfd");
 	       }
 	}
 

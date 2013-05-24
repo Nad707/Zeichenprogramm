@@ -67,7 +67,7 @@ public class Rectangle extends javafx.scene.shape.Rectangle implements de.hska.i
 
 	@Override
 	public Shape copy() {
-		Rectangle copyRect = new Rectangle(this.getX() , this.getY(), this.getWidth(), this.getHeight(), this.getFill());
+		Rectangle copyRect = new Rectangle(this.getX()+15 , this.getY()+15, this.getWidth(), this.getHeight(), this.getFill());
 		
 		return (Shape)copyRect;
 	}
