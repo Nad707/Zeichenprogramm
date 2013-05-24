@@ -1,6 +1,7 @@
 package de.hska.iwii.gui.drawing;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 import javafx.scene.Node;
@@ -210,7 +211,15 @@ public class MyDrawingListener implements DrawingListener {
 
 	@Override
 	public void moveSelectedFiguresToTop() {
-		// TODO Auto-generated method stub
+		int ebene = 0;
+		for (Node shape : myPanel.getChildren()) {
+
+			if(((Shape) shape).isSelected()){
+				ebene = myPanel.getChildren().indexOf(((Shape) shape).isSelected());
+
+				myPanel.getChildren().set(ebene + 1, shape);
+			}
+		}
 
 	}
 
@@ -228,6 +237,15 @@ public class MyDrawingListener implements DrawingListener {
 	@Override
 	public void moveSelectedFiguresUp() {
 		// TODO Auto-generated method stub
+		int ebene = 0;
+		for (Node shape : myPanel.getChildren()) {
+
+			if(((Shape) shape).isSelected()){
+				ebene = myPanel.getChildren().indexOf(((Shape) shape).isSelected());
+
+				myPanel.getChildren().set(ebene - 1, shape);
+			}
+		}
 
 	}
 
